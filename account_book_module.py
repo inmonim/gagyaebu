@@ -85,7 +85,11 @@ def day_input(month):
 
 
 def in_ex():
-    while True:
+    for q in range(4):
+        if q == 3:
+            print('입력회수 초과로 처음으로 돌아갑니다.')
+            return 'exit'
+
         in_ex_input = input('수익 / 지출')
         if in_ex_input in ['수익','수입','이득']:
             return '수익'
@@ -101,19 +105,27 @@ def in_ex():
 
 
 def how_much():
-    while True:
+    for q in range(4):
+        
+        if q == 3:
+            print('입력회수 초과로 처음으로 돌아갑니다.')
+            return 'exit'
+
         much = input('숫자로만 입력해주세요: ')
         if much.isdigit() == True:
             return int(much)
         else:
-            continue
+            print('다시 입력해주세용')
 
 
 def main_category(category):
-    while True:
+    for q in range(4):
+        if q == 3:
+            print('입력회수 초과로 처음으로 돌아갑니다.')
+            return 'exit'
 
         main = input(f'{category} 중 선택해주시기 바랍니다. :')
-
+        
         if main not in category:
             append_main = input('새로운 대분류를 추가하시겠습니까? y/n')
             if append_main in ['y', 'Y', '네', '예']:
@@ -126,11 +138,19 @@ def main_category(category):
             return main
 
 
-def sub_category(category):
-    while True:
-        sub = input(f'{category} 중에서 선택해주시기바랍니다.')
+def sub_category(sub_cat):
+    for q in range(4):
+        if q == 3:
+            print('입력회수 초과로 처음으로 돌아갑니다.')
+            return 'exit'
 
-        if sub not in category:
+        if len(sub_cat) == 0:
+            sub = input('새로운 소분류도 추가해주십시오. :')
+            return sub
+        else:
+            sub = input(f'{sub_cat} 중에서 선택해주시기바랍니다.')
+
+        if sub not in sub_cat:
             append_sub = input('새로운 소분류를 추가하시겠습니까? y/n')
             if append_sub in ['y','Y','네','예']:
                 print('새로운 소분류가 추가되었습니다.')
@@ -150,32 +170,91 @@ def detail():
 
 
 def rating():
-    while True:
+    for q in range(4):
+        if q == 3:
+            print('입력회수 초과로 처음으로 돌아갑니다.')
+            return 'exit'
+
         rating_dict = {5: '훌륭', 4: '괜찮', 3: '애매', 2:'왜샀노', 1:'흑우', 0:'킹쩔수없음'}
+
         rating = int(input('소비자 평가 부탁드려요잉'))
         if rating in [0, 1,2,3,4,5]:
             return rating_dict[rating]
+
         else:
             print('다시 입력해주세용')
 
 
 def camel_pay():
-    while True:
+    for q in range(4):
+        if q == 3:
+            print('입력회수 초과로 처음으로 돌아갑니다.')
+            return 'exit'
+
         camelia = input('동백전으로 사용하셨나요? y/n')
         if camelia in ['y', 'Y', '네', '예','ㅇㅇ','ㅇ']:
             return 'Y'
         elif camelia in ['n','N','노','no','NO','ㄴㄴ','ㄴ']:
             return 'N'
         else:
-            continue
+            print('다시 입력해주세용')
 
 
 def fixed_expenses():
-    while True:
+    for q in range(4):
+        if q == 3:
+            print('입력회수 초과로 처음으로 돌아갑니다.')
+            return 'exit'
+
         fi_ex = input('고정 지출인가용? y/n')
         if fi_ex in ['y', 'Y', '네', '예','ㅇㅇ','ㅇ']:
             return 'Y'
         elif fi_ex in ['n','N','노','no','NO','ㄴㄴ','ㄴ']:
             return 'N'
         else:
-            continue
+            print('다시 입력해주세용')
+
+
+def fixed_expenses():
+    for q in range(4):
+        if q == 3:
+            print('입력회수 초과로 처음으로 돌아갑니다.')
+            return 'exit'
+
+        fi_ex = input('고정 지출인가용? y/n')
+        if fi_ex in ['y', 'Y', '네', '예','ㅇㅇ','ㅇ']:
+            return 'Y'
+        elif fi_ex in ['n','N','노','no','NO','ㄴㄴ','ㄴ']:
+            return 'N'
+
+        else:
+            print('다시 입력해주세용')
+
+
+df = pd.read_excel('./가계부.xlsx')
+
+
+
+def del_last(df):
+    for q in range(4):
+        if q == 3:
+            print('입력회수 초과로 처음으로 돌아갑니다.')
+            return 'exit'
+        
+        last_contents = f'''현재 마지막 항목
+=============================================
+{df.iloc[-1,:]}
+=============================================
+'''
+        print(last_contents)
+        del_last = input('마지막 항목을 지우시겠습니까?(y/n): ')
+        if del_last in ['y','Y', '예','ㅇ','ㄱㄱ','ㄱ','o','O','네']:
+            df = df.iloc[:-1, :]
+            print(last_contents)
+            break
+        elif del_last in ['n','N','ㄴ','아니','아니요','ㄴㄴ','s','no','NO']:
+            print(last_contents)
+            break
+        else:
+            print('다시 입력해주세양')
+            print(last_contents)
