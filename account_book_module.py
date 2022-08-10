@@ -56,7 +56,10 @@ def month_input():
 
 
 def day_input(month):
-    while True:
+    for q in range(4):
+        if q == 3:
+            print('입력회수 초과로 처음으로 돌아갑니다.')
+            return 'exit'
         day_input = input('일을 입력하십시오.: ')
         day_list = []
 
@@ -178,7 +181,11 @@ def rating():
         rating_dict = {5: '훌륭', 4: '괜찮', 3: '애매', 2:'왜샀노', 1:'흑우', 0:'킹쩔수없음'}
 
         rating = int(input('소비자 평가 부탁드려요잉'))
-        if rating in [0, 1,2,3,4,5]:
+        if rating not in [0, 1,2,3,4,5]:
+            print('숫자 0~5로 입력해주세용')
+            continue
+
+        elif rating in [0, 1,2,3,4,5]:
             return rating_dict[rating]
 
         else:
@@ -231,10 +238,6 @@ def fixed_expenses():
             print('다시 입력해주세용')
 
 
-df = pd.read_excel('./가계부.xlsx')
-
-
-
 def del_last(df):
     for q in range(4):
         if q == 3:
@@ -249,12 +252,16 @@ def del_last(df):
         print(last_contents)
         del_last = input('마지막 항목을 지우시겠습니까?(y/n): ')
         if del_last in ['y','Y', '예','ㅇ','ㄱㄱ','ㄱ','o','O','네']:
-            df = df.iloc[:-1, :]
             print(last_contents)
-            break
+            return df.iloc[:-1, :]
         elif del_last in ['n','N','ㄴ','아니','아니요','ㄴㄴ','s','no','NO']:
             print(last_contents)
             break
         else:
             print('다시 입력해주세양')
             print(last_contents)
+
+
+
+def check_10(df):
+    print(df)
