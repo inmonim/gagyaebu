@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 df = pd.read_excel('./가계부.xlsx')
 setting = pd.read_excel('./setting.xlsx')
@@ -58,9 +57,10 @@ def month_input():
 def day_input(month):
     for q in range(4):
         if q == 3:
-            print('입력회수 초과로 처음으로 돌아갑니다.')
+            print('입력회수 초과! 처음으로 돌아갑니당')
             return 'exit'
-        day_input = input('일을 입력하십시오.: ')
+
+        day_input = input('일을 입력해주세용 >>> ')
         day_list = []
 
         for i in day_input:
@@ -93,7 +93,7 @@ def in_ex():
             print('입력회수 초과로 처음으로 돌아갑니다.')
             return 'exit'
 
-        in_ex_input = input('수익 / 지출')
+        in_ex_input = input('수익 / 지출  >>> ')
         if in_ex_input in ['수익','수입','이득']:
             return '수익'
         elif in_ex_input in ['지출','소비','손해']:
@@ -114,7 +114,7 @@ def how_much():
             print('입력회수 초과로 처음으로 돌아갑니다.')
             return 'exit'
 
-        much = input('숫자로만 입력해주세요: ')
+        much = input('금액 입력 (숫자로만 입력해주세요)  >>> ')
         if much.isdigit() == True:
             return int(much)
         else:
@@ -127,10 +127,10 @@ def main_category(category):
             print('입력회수 초과로 처음으로 돌아갑니다.')
             return 'exit'
 
-        main = input(f'{category} 중 선택해주시기 바랍니다. :')
+        main = input(f'{category} \n 중 선택해주시기 바랍니다.  >>> ')
         
         if main not in category:
-            append_main = input('새로운 대분류를 추가하시겠습니까? y/n')
+            append_main = input('새로운 대분류를 추가하시겠습니까? y/n >>> ')
             if append_main in ['y', 'Y', '네', '예']:
                 print('새로운 대분류가 추가되었습니다.')
                 return main
@@ -148,14 +148,14 @@ def sub_category(sub_cat):
             return 'exit'
 
         if len(sub_cat) == 0:
-            sub = input('새로운 소분류도 추가해주십시오. :')
+            sub = input('새로운 소분류도 추가해주십시오. >>> ')
             return sub
         else:
-            sub = input(f'{sub_cat} 중에서 선택해주시기바랍니다.')
+            sub = input(f'{sub_cat} \n 중에서 선택해주시기바랍니다. >>> ')
 
         if sub not in sub_cat:
-            append_sub = input('새로운 소분류를 추가하시겠습니까? y/n')
-            if append_sub in ['y','Y','네','예']:
+            append_sub = input('새로운 소분류를 추가하시겠습니까? y/n >>> ')
+            if append_sub in ['y','Y','네','예','ㅇ','ㅇㅇ','ㄱ','ㄱㄱ']:
                 print('새로운 소분류가 추가되었습니다.')
                 return sub
             else:
@@ -166,7 +166,7 @@ def sub_category(sub_cat):
 
 
 def detail():
-    detail = input('세부 사항에 대해 작성해주십시오. :')
+    detail = input('세부 사항에 대해 작성해주십시오. >>> ')
     if detail == '':
         return '없음'
     return detail
@@ -180,12 +180,8 @@ def rating():
 
         rating_dict = {5: '훌륭', 4: '괜찮', 3: '애매', 2:'왜샀노', 1:'흑우', 0:'킹쩔수없음'}
 
-        rating = int(input('소비자 평가 부탁드려요잉'))
-        if rating not in [0, 1,2,3,4,5]:
-            print('숫자 0~5로 입력해주세용')
-            continue
-
-        elif rating in [0, 1,2,3,4,5]:
+        rating = int(input('소비자 평가 부탁드려요잉(0 ~ 5) >>> '))
+        if rating in [0, 1,2,3,4,5]:
             return rating_dict[rating]
 
         else:
@@ -213,27 +209,11 @@ def fixed_expenses():
             print('입력회수 초과로 처음으로 돌아갑니다.')
             return 'exit'
 
-        fi_ex = input('고정 지출인가용? y/n')
+        fi_ex = input('고정 지출인가용? y/n >>> ')
         if fi_ex in ['y', 'Y', '네', '예','ㅇㅇ','ㅇ']:
             return 'Y'
         elif fi_ex in ['n','N','노','no','NO','ㄴㄴ','ㄴ']:
             return 'N'
-        else:
-            print('다시 입력해주세용')
-
-
-def fixed_expenses():
-    for q in range(4):
-        if q == 3:
-            print('입력회수 초과로 처음으로 돌아갑니다.')
-            return 'exit'
-
-        fi_ex = input('고정 지출인가용? y/n')
-        if fi_ex in ['y', 'Y', '네', '예','ㅇㅇ','ㅇ']:
-            return 'Y'
-        elif fi_ex in ['n','N','노','no','NO','ㄴㄴ','ㄴ']:
-            return 'N'
-
         else:
             print('다시 입력해주세용')
 
@@ -262,6 +242,45 @@ def del_last(df):
             print(last_contents)
 
 
+def data_input(df, setting):
+    year = setting.loc[0, '기본연도']
+    month = setting.loc[0, '기본월']
 
-def check_10(df):
-    print(df)
+    day = day_input(month)
+    if day == 'exit':
+        return False
+    in_or_ex = in_ex()
+    if in_or_ex == 'exit':
+        return False
+    much = how_much()
+    if much == 'exit':
+        return False
+    category = list(df.loc[:, '대분류'].unique())
+    maincategory = main_category(category)
+    if maincategory == 'exit':
+        return False
+    subcategory_list = list(df.loc[df.loc[: , '대분류']==maincategory, '소분류'].unique())
+    subcategory = sub_category(subcategory_list)
+    if subcategory == 'exit':
+        return False
+    de = detail()
+    if de == 'exit':
+        return False
+    rate = rating()
+    if rate == 'exit':
+        return False
+    pay = camel_pay()
+    if pay == 'exit':
+        return False
+    fi_ex = fixed_expenses()
+    if fi_ex == 'exit':
+        return False
+
+    input_data = {
+        '연도' : [year], '월' : [month], '일' :[day],
+        '수익/지출': [in_or_ex], '금액': [much],
+        '대분류': [maincategory], '소분류': [subcategory],
+        '항목명': [de], '평가': [rate], '동백전유무': [pay], '고정지출': [fi_ex]
+        }
+
+    return input_data

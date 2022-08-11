@@ -1,7 +1,5 @@
-from lib2to3.pgen2.pgen import DFAState
-import numpy as np
 import pandas as pd
-from account_book_module import *
+from AB_module import *
 
 df = pd.read_excel('./가계부.xlsx')
 setting = pd.read_excel('./setting.xlsx')
@@ -71,7 +69,7 @@ while True:
         continue
 
     if excecution == '2':
-        check_10(df)
+        print(df.iloc[-10:,:])
     
     if excecution == '4':
         df = del_last(df)
