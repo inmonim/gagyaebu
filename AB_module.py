@@ -4,38 +4,43 @@ df = pd.read_excel('./가계부.xlsx')
 setting = pd.read_excel('./setting.xlsx')
 
 
-def fix_year():
-    setting = pd.read_excel('./setting.xlsx')
-    year = setting.loc[0,'기본연도']
-    f_year = input(f'기본 설정할 연도를 정하십시오. 현재 설정 연도 = {year} (ex> 2022)')
-    if f_year.isdigit() == True:
-        setting.loc[0, '기본연도'] = int(f_year)
-        print(f'기본 연도가 {f_year}로 바뀌었습니당')
-    else:
-        print('형식에 맞춰 입력해줘용')
-    setting.to_excel('./setting.xlsx', index=False)
-    setting = pd.read_excel('./setting.xlsx')
-    return setting.loc[0,'기본연도']
+def fix_year(setting):
+    for q in range(4):
+        if q == 3:
+            print('입력횟수를 초과하셨어양')
+            return 'exit'
+        year = setting['기본연도'][0]
+        f_year = input(f'기본 설정할 연도를 정하십시오. 현재 설정 연도 = {year} >>> ')
+        if f_year.isdigit() == True:
+            setting['기본연도'] = int(f_year)
+            print(f'기본 연도가 {f_year}로 바뀌었습니당')
+        else:
+            print('형식에 맞춰 입력해줘용')
+        setting.to_excel('./setting.xlsx', index=False)
+        break
 
 
-def fix_month():
-    setting = pd.read_excel('./setting.xlsx')
-    month = setting.loc[0,'기본월']
-    f_month = input(f'기본 설정할 월을 정하십시오. 현재 설정 월 = {month} (ex> 07)')
-    if f_month.isdigit() == True:
-        setting.loc[0, '기본월'] = int(f_month)
-        print(f'기본 월이 {f_month}로 바뀌었습니당')
-    else:
-        print('형식에 맞춰 입력해줘용')
-    setting.to_excel('./setting.xlsx', index=False)
-    setting = pd.read_excel('./setting.xlsx')
-    return setting.loc[0,'기본월']
-
-
+def fix_month(setting):
+    for q in range(4):
+        if q == 3:
+            print('입력횟수를 초과하셨어양')
+            return 'exit'
+        month = setting['기본월'][0]
+        f_month = input(f'기본 설정할 월을 정하십시오. 현재 설정 월 = {month} >>> ')
+        if f_month.isdigit() == True:
+            setting['기본월'] = int(f_month)
+            print(f'기본 월이 {f_month}로 바뀌었습니당')
+        else:
+            print('형식에 맞춰 입력해줘용')
+        setting.to_excel('./setting.xlsx', index=False)
+        break
 
 
 def month_input():
-    while True:
+    for q in range(4):
+        if q == 3:
+            print('입력횟수를 초과하셨어양')
+            return 'exit'
         month_input = input('월을 입력하십시오.: ')
         month_list = []
         for i in month_input:
@@ -178,10 +183,10 @@ def rating():
             print('입력회수 초과로 처음으로 돌아갑니다.')
             return 'exit'
 
-        rating_dict = {5: '훌륭', 4: '괜찮', 3: '애매', 2:'왜샀노', 1:'흑우', 0:'킹쩔수없음'}
+        rating_dict = {'5': '훌륭', '4': '괜찮', '3': '애매', '2':'왜샀노', '1':'흑우', '0':'킹쩔수없음'}
 
-        rating = int(input('소비자 평가 부탁드려요잉(0 ~ 5) >>> '))
-        if rating in [0, 1,2,3,4,5]:
+        rating = input('소비자 평가 부탁드려요잉(0 ~ 5) >>> ')
+        if rating in ['0','1','2','3','4','5']:
             return rating_dict[rating]
 
         else:
@@ -284,3 +289,57 @@ def data_input(df, setting):
         }
 
     return input_data
+
+
+def auto_save_set(setting):
+    for q in range(4):
+        if q==3:
+            print('입력횟수 초과했습니당')
+            return 'exit'
+            
+        now_set = setting['자동저장'][0]
+        print(f'현재 설정 : {now_set}')
+        new_set = input('설정을 바꾸시겠습니까? on/off >>> ')
+        if new_set in ['on','On','ON','oN','ㅇㅇ','ㅇ','예','네','y','yes','Y','Yes']:
+            setting['자동저장'] = 'on'
+            print('자동저장이 on로 바뀌었습니당')
+            break
+        elif new_set in ['off','Off','OFF','ㄴㄴ','ㄴ','아니오','아니','ss','s']:
+            setting['자동저장'] = 'off'
+            print('자동저장이 off로 바뀌었습니당')
+            break
+        else:
+            print('형식을 맞춰주세염')
+
+
+def auto_save(df, setting):
+    if setting.loc[0,'자동저장'] == 'on':
+        df.to_excel('가계부.xlsx', index=False)
+        print('저장되었습니다.')
+
+
+def setting_in(setting):
+    while True:
+            
+        s = input('''
+변경할 설정을 입력해주세요.
+
+1. 기본 연도 변경
+
+2. 기본 월 변경
+
+3. 자동저장 on/off
+
+4. 메인메뉴로 돌아가기
+
+>>> ''')
+        if s == '1':
+            fix_year(setting)
+        elif s == '2':
+            fix_month(setting)
+        elif s == '3':
+            auto_save_set(setting)
+        elif s == '4':
+            break
+        else:
+            print('숫자만 입력해주세양')

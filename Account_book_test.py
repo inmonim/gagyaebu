@@ -23,6 +23,7 @@ while True:
 ===============================================================
 
 실행할 행동을 선택해주세요 >>> ''')
+
     if excecution == '1':
         input_data = data_input(df, setting)
         if input_data == False:
@@ -30,6 +31,7 @@ while True:
         else:
             append_df = pd.DataFrame(input_data)
             df = pd.concat([df, append_df], ignore_index=True)
+            auto_save(df, setting)
             continue
 
     if excecution == '2':
@@ -37,9 +39,10 @@ while True:
     
     if excecution == '3':
         df = del_last(df)
+        auto_save(df, setting)
 
     if excecution == '4':
-        print(setting)
+        setting_in(setting)
 
     if excecution == '5':
         break

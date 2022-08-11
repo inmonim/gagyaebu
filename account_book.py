@@ -23,56 +23,24 @@ while True:
 ===============================================================
 
 실행할 행동을 선택해주세요 >>> ''')
+
     if excecution == '1':
-        year = setting.loc[0, '기본연도']
-        month = setting.loc[0, '기본월']
-
-        day = day_input(month)
-        if day == 'exit':
+        input_data = data_input(df, setting)
+        if input_data == False:
             continue
-        in_or_ex = in_ex()
-        if in_or_ex == 'exit':
+        else:
+            append_df = pd.DataFrame(input_data)
+            df = pd.concat([df, append_df], ignore_index=True)
             continue
-        much = how_much()
-        if much == 'exit':
-            continue
-        category = list(df.loc[:, '대분류'].unique())
-        maincategory = main_category(category)
-        if maincategory == 'exit':
-            continue
-        subcategory_list = list(df.loc[df.loc[: , '대분류']==maincategory, '소분류'].unique())
-        subcategory = sub_category(subcategory_list)
-        if subcategory == 'exit':
-            continue
-        de = detail()
-        if de == 'exit':
-            continue
-        rate = rating()
-        if rate == 'exit':
-            continue
-        pay = camel_pay()
-        if pay == 'exit':
-            continue
-        fi_ex = fixed_expenses()
-        if fi_ex == 'exit':
-            continue
-
-        input_data = {
-            '연도' : [year], '월' : [month], '일' :[day],
-            '수익/지출': [in_or_ex], '금액': [much],
-            '대분류': [maincategory], '소분류': [subcategory],
-            '항목명': [de], '평가': [rate], '동백전유무': [pay], '고정지출': [fi_ex]
-            }
-
-        append_df = pd.DataFrame(input_data)
-        df = pd.concat([df, append_df], ignore_index=True)
-        continue
 
     if excecution == '2':
         print(df.iloc[-10:,:])
     
-    if excecution == '4':
+    if excecution == '3':
         df = del_last(df)
+
+    if excecution == '4':
+        print(setting)
 
     if excecution == '5':
         break
