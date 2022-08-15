@@ -4,6 +4,8 @@ from AB_module import *
 df = pd.read_excel('./가계부.xlsx')
 setting = pd.read_excel('./setting.xlsx')
 
+# 본 파일은 test 파일입니당
+
 while True:
 
     excecution = input('''===============================================================
