@@ -44,7 +44,7 @@ while True:
         auto_save(df, setting)
 
     if excecution == '4':
-        setting_in(setting)
+        setting = setting_in(df, setting)
 
     if excecution == '5':
         break

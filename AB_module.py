@@ -1,9 +1,5 @@
 import pandas as pd
 
-df = pd.read_excel('./가계부.xlsx')
-setting = pd.read_excel('./setting.xlsx')
-
-
 def fix_year(setting):
     for q in range(4):
         if q == 3:
@@ -210,7 +206,7 @@ def camel_pay():
 
 def fixed_expenses(setting, main, sub):
     if setting.loc[0,'고정항목 자동선택'] == 'on':
-        if main in list(setting.loc[:,'고정항목 대분류']) or sub in list(setting.loc[:,'고정항목 소분류']):
+        if 'M.'+main in list(setting.loc[:,'고정항목 분류']) or 'S.'+sub in list(setting.loc[:,'고정항목 분류']):
             print('고정항목으로 자동 선택 되었습니다.')
             return 'Y'
 
@@ -237,13 +233,13 @@ def fixed_expenses_on_off(setting):
         now_set = setting.loc[0,'고정항목 자동선택']
         print(f'현재 고정항목 자동 선택 설정: {now_set}')
 
-        new_set = input('고정항목을 자동으로 선택하시겠습니까? on/off >>>')
+        new_set = input('고정항목을 자동으로 선택하시겠습니까? y/n >>>')
 
         if new_set in ['on','On','ON','oN','ㅇㅇ','ㅇ','예','네','y','yes','Y','Yes']:
             setting.loc[0, '고정항목 자동선택'] = 'on'
             print('고정항목 자동저장이 on로 바뀌었습니당')
             break
-        elif new_set in ['off','Off','OFF','ㄴㄴ','ㄴ','아니오','아니','ss','s','n','N']:
+        elif new_set in ['off','Off','OFF','ㄴㄴ','ㄴ','아니오','아니','ss','s']:
             setting.loc[0, '고정항목 자동선택'] = 'off'
             print('고정항목 자동저장이 off로 바뀌었습니당')
             break
@@ -257,20 +253,17 @@ def fixed_expenses_setting(df, setting):
             print('입력횟수 초과했습니당')
             return 'exit'
         
-        main = list(setting.loc[:,'고정항목 대분류'].unique())
-        del main[main.index(False)]
-        sub = list(setting.loc[:, '고정항목 소분류'].unique())
-        del sub[sub.index(False)]
-        print(f'현재 고정항목 자동선택 대분류: {main}')
-        print(f'현재 고정항목 자동선택 소분류: {sub}')
+        category = list(setting.loc[:,'고정항목 분류'].unique())
+        print(f'현재 고정항목 자동선택 분류: {category}')
         ex = input('무엇을 바꾸시겠습니까? 대/소 >>> ')
 
         if ex == '대':
             ex2 = input('삭제/추가 >>> ')
             if ex2 == '삭제':
-                del_main = input('삭제하실 대분류를 기입해주세요 >>> ')
-                if del_main in list(setting.loc[:,'고정항목 대분류']):
-                    setting.loc[setting.loc[:,'고정항목 대분류'] == del_main, '고정항목 대분류'] = False
+                main = list(df.loc[:,'대분류'].unique())
+                del_main = input(f'{main}\n삭제하실 대분류를 분류명만 기입해주세요 >>> ')
+                if 'M.'+del_main in list(setting.loc[:,'고정항목 분류']):
+                    setting.drop(setting[setting.loc[:,'고정항목 분류'] == 'M.'+del_main].index, inplace=True)
                     print('대분류가 삭제되었습니다.')
                 else:
                     print('다시 입력해주세요.')
@@ -279,7 +272,7 @@ def fixed_expenses_setting(df, setting):
 
                 insert_main = input('추가하실 대분류를 기입해주세요 >>> ')
                 if insert_main in list(df.loc[:,'대분류']):
-                    data = {'고정항목 대분류' : [insert_main], '고정항목 소분류' : [False]}
+                    data = {'고정항목 분류' : ['M.'+insert_main]}
                     append_df = pd.DataFrame(data)
                     setting = pd.concat([setting, append_df], ignore_index=True)
                     print('수정되었습니당')
@@ -292,17 +285,18 @@ def fixed_expenses_setting(df, setting):
 
             if ex2 == '삭제':
                 del_sub = input('삭제하실 소분류를 기입해주세요 >>> ')
-                if del_sub in list(setting.loc[:,'고정항목 소분류']):
-                    setting.loc[setting.loc[:,'고정항목 소분류'] == del_sub, '고정항목 소분류'] = False
+                if 'S.'+del_sub in list(setting.loc[:,'고정항목 분류']):
+                    setting.drop(setting[setting.loc[:,'고정항목 분류'] == 'S.'+del_sub].index,inplace=True)
                     print('소분류가 삭제되었습니다.')
                 else:
                     print('다시 입력해주세요.')
                     continue
 
             elif ex2 == '추가':
-                insert_sub = input('추가하실 소분류를 기입해주세요 >>> ')
+                sub = list(df.loc[:,'소분류'].unique())
+                insert_sub = input(f'{sub}\n추가하실 소분류를 기입해주세요 >>> ')
                 if insert_sub in list(df.loc[:,'소분류']):
-                    data = {'고정항목 대분류' : [False], '고정항목 소분류' : [insert_sub]}
+                    data = {'고정항목 분류' : ['S.'+insert_sub]}
                     append_df = pd.DataFrame(data)
                     setting = pd.concat([setting, append_df], ignore_index=True)
                     print('수정되었습니당')
@@ -310,7 +304,7 @@ def fixed_expenses_setting(df, setting):
                     print('다시 입력해주세요.')
                     continue
         setting.to_excel('./setting.xlsx', index=False)
-        break
+        return setting
 
 
 def del_last(df):
@@ -441,7 +435,7 @@ def auto_save(df, setting):
         print('저장되었습니다.')
 
 
-def setting_in(setting):
+def setting_in(df, setting):
     while True:
             
         s = input('''
@@ -471,6 +465,6 @@ def setting_in(setting):
             elif s2 == '2':
                 setting = fixed_expenses_setting(df, setting)
         elif s == '5':
-            break
+            return setting
         else:
             print('숫자만 입력해주세양')
