@@ -4,6 +4,8 @@ from AB_module import *
 df = pd.read_excel('./가계부.xlsx')
 setting = pd.read_excel('./setting.xlsx')
 
+df = hash_for_open(df)
+
 # 본 파일은 test 파일입니당
 
 while True:
@@ -48,7 +50,9 @@ while True:
 
     if excecution == '5':
         break
-    
+
+
+chiper_for_save(df)
 
 df.to_excel('./가계부.xlsx', index=False)
 setting.to_excel('./setting.xlsx', index=False)

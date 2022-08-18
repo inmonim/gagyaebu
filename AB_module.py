@@ -1,36 +1,14 @@
 import pandas as pd
 
-def fix_year(setting):
-    for q in range(4):
-        if q == 3:
-            print('입력횟수를 초과하셨어양')
-            return 'exit'
-        year = setting.loc[0, '기본연도']
-        f_year = input(f'기본 설정할 연도를 정하십시오. 현재 설정 연도 = {year} >>> ')
-        if f_year.isdigit() == True:
-            setting.loc[0, '기본연도'] = int(f_year)
-            print(f'기본 연도가 {f_year}로 바뀌었습니당')
-        else:
-            print('형식에 맞춰 입력해줘용')
-        setting.to_excel('./setting.xlsx', index=False)
-        break
+
+#==================================================================================================================
+
+# 새 항목 추가 모듈
+
+#==================================================================================================================
 
 
-def fix_month(setting):
-    for q in range(4):
-        if q == 3:
-            print('입력횟수를 초과하셨어양')
-            return 'exit'
-        month = setting.loc[0, '기본월']
-        f_month = input(f'기본 설정할 월을 정하십시오. 현재 설정 월 = {month} >>> ')
-        if f_month.isdigit() == True:
-            setting.loc[0, '기본월'] = int(f_month)
-            print(f'기본 월이 {f_month}로 바뀌었습니당')
-        else:
-            print('형식에 맞춰 입력해줘용')
-        setting.to_excel('./setting.xlsx', index=False)
-        break
-
+# 월 직접 입력 (미사용)
 
 def month_input():
     for q in range(4):
@@ -54,6 +32,8 @@ def month_input():
         
         return month_int
 
+
+# 일 직접 입력 (미사용)
 
 def day_input(month):
     for q in range(4):
@@ -88,6 +68,8 @@ def day_input(month):
         return day_int
 
 
+# 수익/지출 판별
+
 def in_ex():
     for q in range(4):
         if q == 3:
@@ -108,6 +90,8 @@ def in_ex():
             print('가능하면 알아들을 수 있게 써 주십시오.')
 
 
+# 금액 입력
+
 def how_much():
     for q in range(4):
         
@@ -121,6 +105,8 @@ def how_much():
         else:
             print('다시 입력해주세용')
 
+
+# 대분류 입력
 
 def main_category(category):
     for q in range(4):
@@ -141,6 +127,8 @@ def main_category(category):
         else:
             return main
 
+
+# 소분류 입력
 
 def sub_category(sub_cat):
     for q in range(4):
@@ -166,12 +154,16 @@ def sub_category(sub_cat):
             return sub
 
 
+# 세부 사항 작성
+
 def detail():
     detail = input('세부 사항에 대해 작성해주십시오. >>> ')
     if detail == '':
         return '없음'
     return detail
 
+
+# 소비 자가 평가
 
 def rating():
     for q in range(4):
@@ -189,6 +181,8 @@ def rating():
             print('다시 입력해주세용')
 
 
+# 동백전 사용 유무
+
 def camel_pay():
     for q in range(4):
         if q == 3:
@@ -203,6 +197,8 @@ def camel_pay():
         else:
             print('다시 입력해주세용')
 
+
+# 고정 소비/지출 입력
 
 def fixed_expenses(setting, main, sub):
     if setting.loc[0,'고정항목 자동선택'] == 'on':
@@ -224,111 +220,11 @@ def fixed_expenses(setting, main, sub):
             print('다시 입력해주세용')
 
 
-def fixed_expenses_on_off(setting):
-    for q in range(4):
-        if q==3:
-            print('입력횟수 초과했습니당')
-            return 'exit'
+#==================================================================================================================
 
-        now_set = setting.loc[0,'고정항목 자동선택']
-        print(f'현재 고정항목 자동 선택 설정: {now_set}')
+# 데이터 입력 종합 실행 함수
 
-        new_set = input('고정항목을 자동으로 선택하시겠습니까? y/n >>>')
-
-        if new_set in ['on','On','ON','oN','ㅇㅇ','ㅇ','예','네','y','yes','Y','Yes']:
-            setting.loc[0, '고정항목 자동선택'] = 'on'
-            print('고정항목 자동저장이 on로 바뀌었습니당')
-            break
-        elif new_set in ['off','Off','OFF','ㄴㄴ','ㄴ','아니오','아니','ss','s']:
-            setting.loc[0, '고정항목 자동선택'] = 'off'
-            print('고정항목 자동저장이 off로 바뀌었습니당')
-            break
-        else:
-            print('형식을 맞춰주세염')
-
-
-def fixed_expenses_setting(df, setting):
-    for q in range(4):
-        if q==3:
-            print('입력횟수 초과했습니당')
-            return 'exit'
-        
-        category = list(setting.loc[:,'고정항목 분류'].unique())
-        print(f'현재 고정항목 자동선택 분류: {category}')
-        ex = input('무엇을 바꾸시겠습니까? 대/소 >>> ')
-
-        if ex == '대':
-            ex2 = input('삭제/추가 >>> ')
-            if ex2 == '삭제':
-                main = list(df.loc[:,'대분류'].unique())
-                del_main = input(f'{main}\n삭제하실 대분류를 분류명만 기입해주세요 >>> ')
-                if 'M.'+del_main in list(setting.loc[:,'고정항목 분류']):
-                    setting.drop(setting[setting.loc[:,'고정항목 분류'] == 'M.'+del_main].index, inplace=True)
-                    print('대분류가 삭제되었습니다.')
-                else:
-                    print('다시 입력해주세요.')
-                    continue
-            elif ex2 == '추가':
-
-                insert_main = input('추가하실 대분류를 기입해주세요 >>> ')
-                if insert_main in list(df.loc[:,'대분류']):
-                    data = {'고정항목 분류' : ['M.'+insert_main]}
-                    append_df = pd.DataFrame(data)
-                    setting = pd.concat([setting, append_df], ignore_index=True)
-                    print('수정되었습니당')
-                else:
-                    print('다시 입력해주세요.')
-                    continue
-
-        elif ex == '소':
-            ex2 = input('삭제/추가 >>> ')
-
-            if ex2 == '삭제':
-                del_sub = input('삭제하실 소분류를 기입해주세요 >>> ')
-                if 'S.'+del_sub in list(setting.loc[:,'고정항목 분류']):
-                    setting.drop(setting[setting.loc[:,'고정항목 분류'] == 'S.'+del_sub].index,inplace=True)
-                    print('소분류가 삭제되었습니다.')
-                else:
-                    print('다시 입력해주세요.')
-                    continue
-
-            elif ex2 == '추가':
-                sub = list(df.loc[:,'소분류'].unique())
-                insert_sub = input(f'{sub}\n추가하실 소분류를 기입해주세요 >>> ')
-                if insert_sub in list(df.loc[:,'소분류']):
-                    data = {'고정항목 분류' : ['S.'+insert_sub]}
-                    append_df = pd.DataFrame(data)
-                    setting = pd.concat([setting, append_df], ignore_index=True)
-                    print('수정되었습니당')
-                else:
-                    print('다시 입력해주세요.')
-                    continue
-        setting.to_excel('./setting.xlsx', index=False)
-        return setting
-
-
-def del_last(df):
-    for q in range(4):
-        if q == 3:
-            print('입력회수 초과로 처음으로 돌아갑니다.')
-            return 'exit'
-        
-        last_contents = f'''현재 마지막 항목
-=============================================
-{df.iloc[-1,:]}
-=============================================
-'''
-        print(last_contents)
-        del_last = input('마지막 항목을 지우시겠습니까?(y/n): ')
-        if del_last in ['y','Y', '예','ㅇ','ㄱㄱ','ㄱ','o','O','네']:
-            print(last_contents)
-            return df.iloc[:-1, :]
-        elif del_last in ['n','N','ㄴ','아니','아니요','ㄴㄴ','s','no','NO']:
-            print(last_contents)
-            return df
-        else:
-            print('다시 입력해주세양')
-            print(last_contents)
+#==================================================================================================================
 
 
 def data_input(df, setting):
@@ -338,9 +234,11 @@ def data_input(df, setting):
     day = day_input(month)
     if day == 'exit':
         return False
+
     in_or_ex = in_ex()
     if in_or_ex == 'exit':
         return False
+
     elif in_or_ex == '지출':
         much = how_much()
         if much == 'exit':
@@ -406,34 +304,44 @@ def data_input(df, setting):
         return input_data
 
 
-def auto_save_set(setting):
+#==================================================================================================================
+
+# 마지막 항목 지우기
+
+#==================================================================================================================
+
+def del_last(df):
     for q in range(4):
-        if q==3:
-            print('입력횟수 초과했습니당')
+        if q == 3:
+            print('입력회수 초과로 처음으로 돌아갑니다.')
             return 'exit'
-            
-        now_set = setting['자동저장'][0]
-        print(f'현재 설정 : {now_set}')
         
-        new_set = input('설정을 바꾸시겠습니까? on/off >>> ')
-        if new_set in ['on','On','ON','oN','ㅇㅇ','ㅇ','예','네','y','yes','Y','Yes']:
-            setting.loc[0, '자동저장'] = 'on'
-            print('자동저장이 on로 바뀌었습니당')
-        elif new_set in ['off','Off','OFF','ㄴㄴ','ㄴ','아니오','아니','ss','s']:
-            setting.loc[0, '자동저장'] = 'off'
-            print('자동저장이 off로 바뀌었습니당')
+        last_contents = f'''현재 마지막 항목
+=============================================
+{df.iloc[-1,:]}
+=============================================
+'''
+        print(last_contents)
+        del_last = input('마지막 항목을 지우시겠습니까?(y/n): ')
+        if del_last in ['y','Y', '예','ㅇ','ㄱㄱ','ㄱ','o','O','네']:
+            print(last_contents)
+            return df.iloc[:-1, :]
+        elif del_last in ['n','N','ㄴ','아니','아니요','ㄴㄴ','s','no','NO']:
+            print(last_contents)
+            return df
         else:
-            print('형식을 맞춰주세염')
-            continue
-        setting.to_excel('./setting.xlsx', index=False)
-        break
+            print('다시 입력해주세양')
+            print(last_contents)
 
 
-def auto_save(df, setting):
-    if setting.loc[0,'자동저장'] == 'on':
-        df.to_excel('가계부.xlsx', index=False)
-        print('저장되었습니다.')
+#==================================================================================================================
 
+# 설정 관련 모듈
+
+#==================================================================================================================
+
+
+# setting 디스플레이
 
 def setting_in(df, setting):
     while True:
@@ -468,3 +376,196 @@ def setting_in(df, setting):
             return setting
         else:
             print('숫자만 입력해주세양')
+
+
+# 연 기본 설정
+
+def fix_year(setting):
+    for q in range(4):
+        if q == 3:
+            print('입력횟수를 초과하셨어양')
+            return 'exit'
+        year = setting.loc[0, '기본연도']
+        f_year = input(f'기본 설정할 연도를 정하십시오. 현재 설정 연도 = {year} >>> ')
+        if f_year.isdigit() == True:
+            setting.loc[0, '기본연도'] = int(f_year)
+            print(f'기본 연도가 {f_year}로 바뀌었습니당')
+        else:
+            print('형식에 맞춰 입력해줘용')
+        setting.to_excel('./setting.xlsx', index=False)
+        break
+
+
+# 연 기본 설정
+
+def fix_month(setting):
+    for q in range(4):
+        if q == 3:
+            print('입력횟수를 초과하셨어양')
+            return 'exit'
+        month = setting.loc[0, '기본월']
+        f_month = input(f'기본 설정할 월을 정하십시오. 현재 설정 월 = {month} >>> ')
+        if f_month.isdigit() == True:
+            setting.loc[0, '기본월'] = int(f_month)
+            print(f'기본 월이 {f_month}로 바뀌었습니당')
+        else:
+            print('형식에 맞춰 입력해줘용')
+        setting.to_excel('./setting.xlsx', index=False)
+        break
+
+
+# 고정항목 자동선택 on/off
+
+def fixed_expenses_on_off(setting):
+    for q in range(4):
+        if q==3:
+            print('입력횟수 초과했습니당')
+            return 'exit'
+
+        now_set = setting.loc[0,'고정항목 자동선택']
+        print(f'현재 고정항목 자동 선택 설정: {now_set}')
+
+        new_set = input('고정항목을 자동으로 선택하시겠습니까? y/n >>>')
+
+        if new_set in ['on','On','ON','oN','ㅇㅇ','ㅇ','예','네','y','yes','Y','Yes']:
+            setting.loc[0, '고정항목 자동선택'] = 'on'
+            print('고정항목 자동저장이 on로 바뀌었습니당')
+            break
+        elif new_set in ['off','Off','OFF','ㄴㄴ','ㄴ','아니오','아니','ss','s']:
+            setting.loc[0, '고정항목 자동선택'] = 'off'
+            print('고정항목 자동저장이 off로 바뀌었습니당')
+            break
+        else:
+            print('형식을 맞춰주세염')
+
+
+# 고정 수익/소비 자동 선택 항목 설정
+
+def fixed_expenses_setting(df, setting):
+    for q in range(4):
+        if q==3:
+            print('입력횟수 초과했습니당')
+            return 'exit'
+        
+        category = list(setting.loc[:,'고정항목 분류'].unique())
+        print(f'현재 고정항목 자동선택 분류: {category}')
+        ex = input('무엇을 바꾸시겠습니까? 대/소 >>> ')
+
+        if ex == '대':
+            ex2 = input('삭제/추가 >>> ')
+            if ex2 == '삭제':
+                main = list(df.loc[:,'대분류'].unique())
+                del_main = input(f'{main}\n삭제하실 대분류를 분류명만 기입해주세요 >>> ')
+                if 'M.'+del_main in list(setting.loc[:,'고정항목 분류']):
+                    setting.drop(setting[setting.loc[:,'고정항목 분류'] == 'M.'+del_main].index, inplace=True)
+                    print('대분류가 삭제되었습니다.')
+                else:
+                    print('다시 입력해주세요.')
+                    continue
+            elif ex2 == '추가':
+
+                insert_main = input('추가하실 대분류를 기입해주세요 >>> ')
+                if insert_main in list(df.loc[:,'대분류']):
+                    data = {'고정항목 분류' : ['M.'+insert_main]}
+                    append_df = pd.DataFrame(data)
+                    setting = pd.concat([setting, append_df], ignore_index=True)
+                    print('수정되었습니당')
+                else:
+                    print('다시 입력해주세요.')
+                    continue
+
+        elif ex == '소':
+            ex2 = input('삭제/추가 >>> ')
+
+            if ex2 == '삭제':
+                del_sub = input('삭제하실 소분류를 기입해주세요 >>> ')
+                if 'S.'+del_sub in list(setting.loc[:,'고정항목 분류']):
+                    setting.drop(setting[setting.loc[:,'고정항목 분류'] == 'S.'+del_sub].index,inplace=True)
+                    print('소분류가 삭제되었습니다.')
+                else:
+                    print('다시 입력해주세요.')
+                    continue
+
+            elif ex2 == '추가':
+                sub = list(df.loc[:,'소분류'].unique())
+                insert_sub = input(f'{sub}\n추가하실 소분류를 기입해주세요 >>> ')
+                if insert_sub in list(df.loc[:,'소분류']):
+                    data = {'고정항목 분류' : ['S.'+insert_sub]}
+                    append_df = pd.DataFrame(data)
+                    setting = pd.concat([setting, append_df], ignore_index=True)
+                    print('수정되었습니당')
+                else:
+                    print('다시 입력해주세요.')
+                    continue
+
+        setting.to_excel('./setting.xlsx', index=False)
+        return setting
+
+
+# 자동저장 on/off
+
+def auto_save_set(setting):
+    for q in range(4):
+        if q==3:
+            print('입력횟수 초과했습니당')
+            return 'exit'
+            
+        now_set = setting['자동저장'][0]
+        print(f'현재 설정 : {now_set}')
+        
+        new_set = input('설정을 바꾸시겠습니까? on/off >>> ')
+        if new_set in ['on','On','ON','oN','ㅇㅇ','ㅇ','예','네','y','yes','Y','Yes']:
+            setting.loc[0, '자동저장'] = 'on'
+            print('자동저장이 on로 바뀌었습니당')
+        elif new_set in ['off','Off','OFF','ㄴㄴ','ㄴ','아니오','아니','ss','s']:
+            setting.loc[0, '자동저장'] = 'off'
+            print('자동저장이 off로 바뀌었습니당')
+        else:
+            print('형식을 맞춰주세염')
+            continue
+        setting.to_excel('./setting.xlsx', index=False)
+        break
+
+
+# 자동저장 본체
+
+def auto_save(df, setting):
+    if setting.loc[0,'자동저장'] == 'on':
+        df.to_excel('가계부.xlsx', index=False)
+        print('저장되었습니다.')
+
+
+#==================================================================================================================
+
+# 암호화 모듈
+
+#==================================================================================================================
+
+
+# 저장용 암호화
+
+def cipher(string):
+    return 'p'.join([str(ord(i)) for i in string])
+
+def chiper_for_save(df):
+    df.loc[:,['대분류']] = list(map(cipher, df.loc[:,'대분류']))
+    df.loc[:,['소분류']] = list(map(cipher, df.loc[:,'소분류']))
+    df.loc[:,['항목명']] = list(map(cipher, df.loc[:,'항목명']))
+    df.loc[:,['금액']] = list(map(hex, df.loc[:,'금액']))
+    return df
+
+
+# 암호 해시 모듈
+
+def hash(string):
+    return ''.join([chr(int(i)) for i in string.split('p')])
+
+def hash_money(inter):
+    return int(inter, 16)
+
+def hash_for_open(df):
+    df.loc[:,['대분류']] = list(map(hash, df.loc[:,'대분류']))
+    df.loc[:,['소분류']] = list(map(hash, df.loc[:,'소분류']))
+    df.loc[:,['항목명']] = list(map(hash, df.loc[:,'항목명']))
+    df.loc[:,['금액']] = list(map(hash_money, df.loc[:,'금액']))
+    return df
